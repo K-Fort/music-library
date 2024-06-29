@@ -1,27 +1,83 @@
 const library = {
-  tracks: { t01: { id: "t01",
-                   name: "Code Monkey",
-                   artist: "Jonathan Coulton",
-                   album: "Thing a Week Three" },
-            t02: { id: "t02",
-                   name: "Model View Controller",
-                   artist: "James Dempsey",
-                   album: "WWDC 2003"},
-            t03: { id: "t03",
-                   name: "Four Thirty-Three",
-                   artist: "John Cage",
-                   album: "Woodstock 1952"}
-          },
-  playlists: { p01: { id: "p01",
-                      name: "Coding Music",
-                      tracks: ["t01", "t02"]
-                    },
-               p02: { id: "p02",
-                      name: "Other Playlist",
-                      tracks: ["t03"]
-                    }
-             }
-};
+       tracks: {
+         t01: {
+           id: "t01",
+           name: "Code Monkey",
+           artist: "Jonathan Coulton",
+           album: "Thing a Week Three",
+         },
+         t02: {
+           id: "t02",
+           name: "Model View Controller",
+           artist: "James Dempsey",
+           album: "WWDC 2003",
+         },
+         t03: {
+           id: "t03",
+           name: "Four Thirty-Three",
+           artist: "John Cage",
+           album: "Woodstock 1952",
+         },
+       },
+       playlists: {
+         p01: { id: "p01", name: "Coding Music", tracks: ["t01", "t02"] },
+         p02: { id: "p02", name: "Other Playlist", tracks: ["t03"] },
+       },
+       printTracks: function () {
+         const tracks = Object.values(this.tracks);
+         for (let track of tracks) {
+           console.log(
+             `${track.id}: ${track.name} by ${track.artist} (${track.album})`,
+           );
+         }
+       },
+       printPlaylists: function () {
+         const playlists = Object.values(this.playlists);
+         for (let playlist of playlists) {
+           console.log(
+             `${playlist.id}: ${playlist.name} - ${playlist.tracks.length} tracks`,
+           );
+         }
+       },
+       printPlaylist: function (playlistId) {
+         const playlist = this.playlists[playlistId];
+         console.log(
+           `${playlist.id} - ${playlist.name} - ${playlist.tracks.length} tracks`,
+         );
+         for (let trackId of playlist.tracks) {
+           const track = this.tracks[trackId];
+           console.log(
+             `${track.id} - ${track.name} by ${track.artist} (${track.album})`,
+           );
+         }
+       },
+       addTrackToPlaylist: function (trackId, playlistId) {
+         const playlist = this.playlists[playlistId];
+     
+         if (!playlist.tracks.includes(trackId)) {
+           playlist.tracks.push(trackId);
+         } else {
+           console.log(`Track ${trackId} already exists in playlist ${playlistId}`);
+         }
+       },
+       addTrack: function (name, artist, album) {
+         let trackNumber = Object.keys(this.tracks).length + 1;
+         let id = `t${trackNumber.toString().padStart(2, "0")}`;
+     
+         this.tracks[id] = {};
+         this.tracks[id].name = name;
+         this.tracks[id].artist = artist;
+         this.tracks[id].album = album;
+         this.tracks[id].id = id;
+       },
+       addPlaylist: function (name) {
+         let playlistNumber = Object.keys(this.playlists).length + 1;
+         let id = `p${playlistNumber.toString().padStart(2, "0")}`;
+     
+         this.playlists[id] = { id, name, tracks: [] };
+       },
+     };
+     
 
 /////////////////////////////
 // FUNCTIONS TO IMPLEMENT:
@@ -30,26 +86,14 @@ const library = {
 // prints a list of all playlists, in the form:
 // p01: Coding Music - 2 tracks
 // p02: Other Playlist - 1 tracks
-const printPlaylists = function() {
-       const playlists = Object.values(library.playlists);
-       
-       for (let playlist of playlists) {
-           console.log(`${playlist.id}: ${playlist.name} - ${playlist.tracks.length} tracks`);
-       }
-   }
+library.printPlaylists()
 
 // prints a list of all tracks, using the following format:
 // t01: Code Monkey by Jonathan Coulton (Thing a Week Three)
 // t02: Model View Controller by James Dempsey (WWDC 2003)
 // t03: Four Thirty-Three by John Cage (Woodstock 1952)
 
-const printTracks = function() {
-    const tracks = Object.values(library.tracks);
-
-    for (let track of tracks) {
-        console.log(`${track.id}: ${track.name} by ${track.artist} (${track.album})`);
-    }
-}
+library.printTracks()
 
 
 
@@ -58,40 +102,12 @@ const printTracks = function() {
 // p01: Coding Music - 2 tracks
 // t01: Code Monkey by Jonathan Coulton (Thing a Week Three)
 // t02: Model View Controller by James Dempsey (WWDC 2003)
-
-const printPlaylist = function (playlistId) {
-       const playlist = library.playlists[playlistId];
-     
-       console.log(
-         `${playlist.id} - ${playlist.name} - ${playlist.tracks.length} tracks`,
-       );
-     
-       for (let tracks of playlist.tracks) {
-         const track = library.tracks[tracks];
-         console.log(
-           `${track.id} - ${track.name} by ${track.artist} (${track.album})`,
-         );
-       }
-     };
+library.printPlaylist('p01');
 
 
 // adds an existing track to an existing playlist
-const addTrackToPlaylist = function(trackId, playlistId) {
-       // Retrieve the playlist by its ID
-       const playlist = library.playlists[playlistId];
+library.addTrackToPlaylist('t01', 'p02');
 
-           // Check if the track already exists in the playlist
-       if (!playlist.tracks.includes(trackId)) {
-               // Add the track to the playlist
-              playlist.tracks.push(trackId);
-       } else {
-              console.log(`Track ${trackId} already exists in playlist ${playlistId}`);
-        }
-        
-   
-       // Log the updated playlist
-       console.log(playlist);
-   };
 
    
 
@@ -104,31 +120,15 @@ const generateUid = function() {
 
 
 // adds a track to the library
+library.addTrack('Random Track', 'Random Artist', 'Random Album');
 
-       const addTrack = function(name, artist, album) {
-              let trackNumber = Object.keys(library.tracks).length + 1
-              let id = `t${trackNumber.toString().padStart(2, "0")}`
-
-              library.tracks[id] = {}
-              library.tracks[id].name = name
-              library.tracks[id].artist = artist
-              library.tracks[id].album = album
-              library.tracks[id].id = id
-       
-          };
 
         
 
 
 // adds a playlist to the library
-const addPlaylist = function(name) {
+library.addPlaylist('Random Playlist');
 
-        let playlistNumber = Object.keys(library.playlists).length + 1
-       let id = `p${playlistNumber.toString().padStart(2, "0")}`
-
-       
-       library.playlists[id] = { id, name, tracks: [] };
-}
 
 
 
